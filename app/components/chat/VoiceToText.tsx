@@ -52,9 +52,9 @@ const Dictaphone = () => {
       <div>
         <input
           value={voiceTranscript}
-          onChange={() => {
-            const text = transcript.toString();
-            setVoiceTranscript(t)}}
+        //   onChange={() => {
+        //     const text = transcript.toString();
+        //     setVoiceTranscript(t)}}
         />
       </div>
     </>
