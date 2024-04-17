@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import ChatSettings from './components/chat/ChatSettings';
 import ChatSection from './components/chat/ChatSection';
 import { Finger_Paint } from 'next/font/google';
+import VoiceSection from './components/chat/VoiceSection';
 
 const fingerPaint = Finger_Paint({ weight: '400', subsets: ['latin'] });
 
@@ -65,21 +66,31 @@ export default function Home() {
     setImageStatus(AIStatus.Idle);
   };
 
-  // const lastMessage = messages.filter((m) => m.role === 'assistant').pop();
+  const lastMessage = messages.filter((m) => m.role === 'assistant').pop();
   return (
     <main className={fingerPaint.className}>
       <header className='py-8 text-5xl font-bold text-center mb-4'>
         DaVinci GPT
       </header>
       <div className='flex min-w-lg'>
-        <ChatSettings
-          status={status}
-          setStatus={setStatus}
-          messages={messages}
-          setMessages={setMessages}
-          paintAPIHandler={paintAPIHandler}
-          setImageUrl={setImageUrl}
-        />
+        <div className='flex flex-col'>
+          <VoiceSection
+            status={status}
+            setStatus={setStatus}
+            messages={messages}
+            setMessages={setMessages}
+            paintAPIHandler={paintAPIHandler}
+            setImageUrl={setImageUrl}
+          />
+          <ChatSettings
+            status={status}
+            setStatus={setStatus}
+            messages={messages}
+            setMessages={setMessages}
+            paintAPIHandler={paintAPIHandler}
+            setImageUrl={setImageUrl}
+          />
+        </div>
         <ChatSection
           messages={messages}
           status={status}
