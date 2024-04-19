@@ -5,97 +5,108 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
 import { Train_One } from 'next/font/google';
+import MicIcon from '../icons/micIcon';
 
-const appId = '<INSERT_SPEECHLY_APP_ID_HERE>';
+// const appId = '<INSERT_SPEECHLY_APP_ID_HERE>';
 // const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
 // SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
 const Dictaphone = () => {
-  const [voiceTranscript, setVoiceTranscript] = useState<string[]>([]);
+  const [browserSupportsSpeech, setBrowserSupportsSpeech] =
+    useState<boolean>(true);
+  const [userInput, setUserInput] = useState<string[]>([]);
+  const [voiceTranscript, setVoiceTranscript] = useState<string>('');
+  const [isListening, setIsListening] = useState<boolean>(false);
   const {
     transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
-  //   const [] = useState();
+  // //   const [] = useState();
   const startListening = () =>
     SpeechRecognition.startListening({ continuous: true });
 
-  // useEffect(() => {
-  //   if (listening) {
-  //     console.log('Listening...');
-  //   }
-  //   console.log('transcript:');
-  //   console.log(transcript);
-  // }, [listening, transcript]);
-
-  if (!browserSupportsSpeechRecognition) {
-    return <span>{`Browser doesn't support speech recognition.`}</span>;
-  }
+  useEffect(() => {
+    if (!browserSupportsSpeechRecognition) {
+      setBrowserSupportsSpeech(false);
+    }
+    if (browserSupportsSpeechRecognition) {
+      setVoiceTranscript(transcript);
+      setIsListening(listening);
+    }
+  }, [browserSupportsSpeechRecognition, listening, transcript]);
 
   const handleVoiceTranscript = () => {
-    setVoiceTranscript((prev) => {
-      console.log('prev: ', prev);
-      const arrayToString = prev.join(' ');
-      const diff = getStringDifference(arrayToString, transcript);
-
-      console.log('diff: ', diff);
-
-      return diff.length > 0 ? [...prev, diff] : prev;
-    });
     SpeechRecognition.stopListening();
-    resetTranscript();
+
+    setUserInput((prev) => {
+      if (voiceTranscript.length <= 0) {
+        return prev;
+      }
+      console.log('prev: ', prev);
+      return [...prev, voiceTranscript.concat(' ')];
+    });
+    setTimeout(() => {
+      resetTranscript();
+    }, 250); // Added delay to ensure transcript from speech recognition is reset, increase time as needed
   };
 
   const handleUndo = () => {
-    setVoiceTranscript((prev) => {
+    setUserInput((prev) => {
       const copy = [...prev];
       copy.pop();
       return copy;
     });
+  };
+
+  if (!browserSupportsSpeech) {
+    return <div>Your browser does not support speech recognition</div>;
   }
 
   return (
     <>
-      <div className='flex flex-col'>
-        <p>Microphone: {listening ? 'on' : 'off'}</p>
-        <button
-          onTouchStart={startListening}
-          onMouseDown={startListening}
-          onTouchEnd={handleVoiceTranscript}
-          onMouseUp={handleVoiceTranscript}
-        >
-          Hold to talk
-        </button>
-        <p>{'transcript: '}</p>
-        <p>{transcript}</p>
-        <p>{'voiceTranscript: '}</p>
-        <p>{voiceTranscript}</p>
-        <button onClick={handleUndo}>Undo</button>
-        <button onClick={resetTranscript}>Reset</button>
+      <div className='flex justify-center'>
+        {isListening ? (
+          <>
+            <MicIcon />
+            <span>Listening...</span>
+          </>
+        ) : (
+          <>
+            <span>Microphone:&nbsp;</span>
+            <span>Off</span>
+          </>
+        )}
       </div>
-      {/* <div>
-        <input
-          value={voiceTranscript}
-          // onChange={() => {
-          //   const text = transcript.toString();
-          //   setVoiceTranscript(t)}}
-        />
-      </div> */}
+
+      <button
+        className='btn btn-primary'
+        onTouchStart={startListening}
+        onMouseDown={startListening}
+        onTouchEnd={handleVoiceTranscript}
+        onMouseUp={handleVoiceTranscript}
+      >
+        Hold to talk
+      </button>
+      <br />
+      {voiceTranscript.length > 0 ? (
+        <>
+          <p className='text-center text-lg text-green-700'>
+            {voiceTranscript}
+          </p>
+        </>
+      ) : userInput.length > 0 ? (
+        <>
+          <p className='text-center text-lg text-blue-700'>{userInput}</p>
+          <button className='mx-auto btn btn-ghost w-fit' onClick={handleUndo}>
+            Undo
+          </button>
+        </>
+      ) : (
+        <p className='text-center'>Press Mic and Speak</p>
+      )}
     </>
   );
 };
 export default Dictaphone;
-
-function getStringDifference(prevStr: string, fullTranscript: string) {
-  if (fullTranscript.length <= 0) {
-    return '';
-  }
-
-  let difference = '';
-  difference = fullTranscript.slice(prevStr.length, fullTranscript.length);
-  console.log('difference: ', difference);
-
-  return difference;
-}
