@@ -27,6 +27,7 @@ const Dictaphone = () => {
   const startListening = () =>
     SpeechRecognition.startListening({ continuous: true });
 
+  // UseEffect added to prevent hydration errors
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) {
       setBrowserSupportsSpeech(false);
@@ -38,14 +39,16 @@ const Dictaphone = () => {
   }, [browserSupportsSpeechRecognition, listening, transcript]);
 
   const handleVoiceTranscript = () => {
+    // Stop speech recognition
     SpeechRecognition.stopListening();
 
+    // Update user input state is there is a new voice transcript
     setUserInput((prev) => {
       if (voiceTranscript.length <= 0) {
         return prev;
       }
-      console.log('prev: ', prev);
-      return [...prev, voiceTranscript.concat(' ')];
+      // A period and space added at end of new voice transcript
+      return [...prev, voiceTranscript.concat('. ')];
     });
     setTimeout(() => {
       resetTranscript();
@@ -53,6 +56,7 @@ const Dictaphone = () => {
   };
 
   const handleUndo = () => {
+    // Remove last element in array from user input
     setUserInput((prev) => {
       const copy = [...prev];
       copy.pop();
