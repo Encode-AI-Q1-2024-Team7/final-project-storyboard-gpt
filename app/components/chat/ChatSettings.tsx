@@ -59,7 +59,7 @@ export default function ChatSettings({
 
   return (
     <div className='flex flex-col'>
-      <div className='relative min-w-[500px] ml-6 w-96 mockup-window border bg-base-300 h-fit overflow-visible z-10 mb-6'>
+      {/* <div className='relative min-w-[500px] ml-6 w-96 mockup-window border bg-base-300 h-fit overflow-visible z-10 mb-6'>
         <div className='card-body'>
           <h2 className='text-2xl font-bold text-center mb-4'>Try Me!</h2>
           <div className='sticky top-36 rounded-md mx-3 py-4'>
@@ -100,7 +100,7 @@ export default function ChatSettings({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       {messages.length > 0 ? (
         <div className='relative min-w-[500px] ml-6 w-96 mockup-window border bg-primary h-fit animate-fade'>
           <div className='card-body'>

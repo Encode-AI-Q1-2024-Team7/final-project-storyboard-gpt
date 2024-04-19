@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import DropDownBox, { Option } from '../ui/dropdown';
 import { AIStatus, AssistantMessage } from '@/app/page';
-import Dictaphone from './VoiceToText';
+import VoiceToText from './VoiceToText';
 
 const Themes: Option[] = [
   { id: 1, name: 'Landscape' },
@@ -63,7 +63,7 @@ export default function VoiceSection({
       <div className='relative min-w-[500px] ml-6 w-96 mockup-window border bg-base-300 h-fit overflow-visible z-10 mb-6'>
         <div className='card-body'>
           <h2 className='text-2xl font-bold text-center mb-4'>Voice Section!</h2>
-          <Dictaphone />
+          <VoiceToText />
           
         </div>
       </div>
