@@ -72,7 +72,7 @@ export default function Home() {
       <header className='py-8 text-5xl font-bold text-center mb-4'>
         DaVinci GPT
       </header>
-      <div className='flex min-w-lg'>
+      <div className='flex min-w-lg flex-wrap'>
         <div className='flex flex-col'>
           <VoiceSection
             status={status}
@@ -91,13 +91,14 @@ export default function Home() {
             setImageUrl={setImageUrl}
           />
         </div>
-        <ChatSection
+       
+        {/* <ChatSection
           messages={messages}
           status={status}
           lastMessageRef={lastMessageRef}
           imageStatus={imageStatus}
           imageUrl={imageUrl}
-        />
+        /> */}
       </div>
     </main>
   );

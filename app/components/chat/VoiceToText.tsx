@@ -7,6 +7,7 @@ import SpeechRecognition, {
 import { Train_One } from 'next/font/google';
 import MicIcon from '../icons/micIcon';
 import { AssistantMessage } from 'ai';
+import { useChat } from 'ai/react';
 
 // const appId = '<INSERT_SPEECHLY_APP_ID_HERE>';
 // const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
@@ -18,9 +19,10 @@ const VoiceToText = () => {
   const [userInput, setUserInput] = useState<string[]>([]);
   const [voiceTranscript, setVoiceTranscript] = useState<string>('');
   const [isListening, setIsListening] = useState<boolean>(false);
-  const [voiceAPIResponse, setVoiceAPIResponse] = useState<AssistantMessage[]>([]);
-
-
+  const [voiceAPIResponse, setVoiceAPIResponse] = useState<AssistantMessage[]>(
+    []
+  );
+  const [summaryText, setSummaryText] = useState<string>('');
 
   const {
     transcript,
@@ -46,6 +48,8 @@ const VoiceToText = () => {
   const handleVoiceTranscript = () => {
     // Stop speech recognition
     SpeechRecognition.stopListening();
+
+    console.log('********** transcript: ', transcript);
 
     // Update user input state is there is a new voice transcript
     setUserInput((prev) => {
@@ -81,35 +85,59 @@ const VoiceToText = () => {
     // setStatus(AIStatus.InProgress);
 
     const formData = new FormData();
-    formData.append(
-      'message',
-      voiceTranscript
-    );
-    
+    formData.append('message', voiceTranscript);
+
     const response = await fetch('/api/ai-assistant-voice', {
       method: 'POST',
       body: JSON.stringify({ message: formData.get('message') }),
     });
-    
+
     if (!response.ok) {
       console.error('API request failed');
       return;
     }
-    
+
     const data: { messages: AssistantMessage[] } = await response.json();
     console.log('********** data from API: ', data);
     setVoiceAPIResponse(data.messages);
     // setStatus(AIStatus.Idle);
   }
 
+  const handleSummaryAPI = async () => {
+    // Get the story suggestion from the assistant
+    const prompt = voiceAPIResponse.find(
+      (message) => message.role === 'assistant'
+    )?.content;
+
+    // If the prompt is not found, log an error and return
+    if (!prompt) {
+      console.error('Voice Response not found');
+      return;
+    }
+
+    // Call the AI Summary API
+    const response = await fetch('/api/ai-chat-summary', {
+      method: 'POST',
+      body: JSON.stringify({
+        prompt,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('API request failed');
+      return;
+    }
+
+    const responseSummaryText = await response.json();
+    console.log('********** responseSummaryText: ', responseSummaryText);
+    setSummaryText(responseSummaryText);
+  };
+
   const handleImageAPI = async () => {
     // // Set the status to in progress
     // setImageStatus(AIStatus.InProgress);
 
-    // Get the painting suggestion from the assistant
-    const prompt = voiceAPIResponse.find(
-      (message) => message.role === 'assistant'
-    )?.content;
+    const prompt = summaryText;
 
     // If the prompt is not found, log an error and return
     if (!prompt) {
@@ -168,43 +196,50 @@ const VoiceToText = () => {
       </button>
       <br />
       {/* {voiceTranscript.length > 0 ? ( */}
-        <>
+      <>
           <p className='text-center text-lg text-green-700'>
             {voiceTranscript}
           </p>
         </>
       {/* ) : userInput.length > 0 ? ( */}
-        <>
-          <p className='text-center text-lg text-blue-700'>{userInput}</p>
-          <button
-            id='btn-api'
-            className='mx-auto btn btn-secondary w-fit'
-            onClick={handleImageAPI}
-          >
-            IMAGE
-          </button>
-          <button
-            id='btn-api'
-            className='mx-auto btn btn-secondary w-fit'
-            onClick={handleAPI}
-          >
-            API
-          </button>
-          <button
-            id='btn-reset'
-            className='mx-auto btn btn-secondary w-fit'
-            onClick={handleReset}
-          >
-            Reset
-          </button>
-          <button
-            id='btn-undo'
-            className='mx-auto btn btn-ghost w-fit'
-            onClick={handleUndo}
-          >
-            Undo
-          </button>
-        </>
+      <>
+        <p className='text-center text-lg text-blue-700'>{userInput}</p>
+        <button
+          id='btn-api'
+          className='mx-auto btn btn-secondary w-fit'
+          onClick={handleSummaryAPI}
+        >
+          Summary
+        </button>
+        <button
+          id='btn-api'
+          className='mx-auto btn btn-secondary w-fit'
+          onClick={handleImageAPI}
+        >
+          IMAGE
+        </button>
+        <button
+          id='btn-api'
+          className='mx-auto btn btn-secondary w-fit'
+          onClick={handleAPI}
+        >
+          API
+        </button>
+        <button
+          id='btn-reset'
+          className='mx-auto btn btn-secondary w-fit'
+          onClick={handleReset}
+        >
+          Reset
+        </button>
+        <button
+          id='btn-undo'
+          className='mx-auto btn btn-ghost w-fit'
+          onClick={handleUndo}
+        >
+          Undo
+        </button>
+      </>
       {/* ) : (
         <p className='text-center'>Press Mic and Speak</p>
       )} */}
