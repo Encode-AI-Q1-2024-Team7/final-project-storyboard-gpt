@@ -90,6 +90,7 @@ const VoiceToText = () => {
     // setStatus(AIStatus.InProgress);
 
     const formData = new FormData();
+
     formData.append('message', userInput.join(' '));
 
     const response = await fetch('/api/ai-assistant-voice', {
@@ -142,7 +143,9 @@ const VoiceToText = () => {
     // // Set the status to in progress
     // setImageStatus(AIStatus.InProgress);
 
-    const prompt = summaryText;
+    //const prompt = summaryText;
+
+    const prompt = "Give me an animated picture to represent this: " + summaryText +", and please highlight the sci-fi part.";
 
     // If the prompt is not found, log an error and return
     if (!prompt) {
