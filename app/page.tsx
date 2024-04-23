@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
 import styles from './page.module.scss';
 import Image from 'next/image';
 import Lenis from '@studio-freight/lenis';
@@ -7,8 +7,8 @@ import { useTransform, useScroll, motion } from 'framer-motion';
 import ChatSettings from './components/chat/ChatSettings';
 import ChatSection from './components/chat/ChatSection';
 import VoiceSection from './components/chat/VoiceSection';
+import VoiceToText from './components/chat/VoiceToText';
 
-const images = ['STORYTIME.jpg'];
 
 export enum AIStatus {
   Idle = 'Idle',
@@ -37,7 +37,6 @@ export default function Home() {
   const y = useTransform(scrollYProgress, [0, 1], [0, height * 6.0]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, height * 1.0]);
   const y3 = useTransform(scrollYProgress, [0, 1], [0, height * 7.0]);
-  // const y4 = useTransform(scrollYProgress, [0, 1], [0, height * 3])
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -102,225 +101,70 @@ export default function Home() {
       </header>
       {/* <div className={styles.spacer}></div> */}
       <div ref={gallery} className={styles.gallery}>
-        {/* <Column images={[images[0], images[1], images[2], images[3]]} y={y} /> */}
-        <Column
-          images={[
-            <StoryCard
-              key={1}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={2}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={3}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={4}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-          ]}
-          y={y}
-        />
-        <Column
-          images={[
-            <StoryCard
-              key={1}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={2}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={3}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={4}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-          ]}
-          y={y2}
-        />
-        <Column
-          images={[
-            <StoryCard
-              key={1}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={2}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={3}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-            <StoryCard
-              key={4}
-              status={status}
-              setStatus={setStatus}
-              messages={messages}
-              setMessages={setMessages}
-              paintAPIHandler={paintAPIHandler}
-              setImageUrl={setImageUrl}
-            />,
-          ]}
-          y={y3}
-        />
+        <Column id='col-1' y={y} />
+        <Column id='col-2' y={y2} />
+        <Column id='col-3' y={y3} />
       </div>
       <div className={styles.spacer}></div>
+      <header className='py-8 text-5xl font-bold text-center'>
+        ~ End of Page ~
+      </header>
     </main>
   );
 }
 
-const Column = ({ images, y }: { images: any; y: any }) => {
+const Column = ({ id, y }: { id: string; y: any }) => {
   return (
     <motion.div className={styles.column} style={{ y }}>
-      {images.map((src: any, i: any) => {
-        return (
-          <div key={i} className='flex flex-col'>
-            {src}
-          </div>
-        );
-      })}
+      <StoryCard id={id} />
+      <StoryCard id={id} />
+      <StoryCard id={id} />
+      <StoryCard id={id} />
     </motion.div>
   );
 };
 
-interface StoryCardProps {
-  status: AIStatus;
-  setStatus: React.Dispatch<React.SetStateAction<AIStatus>>;
-  messages: AssistantMessage[];
-  setMessages: React.Dispatch<React.SetStateAction<AssistantMessage[]>>;
-  paintAPIHandler: () => void;
-  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
-}
+// interface StoryCardProps {
+//   status: AIStatus;
+//   setStatus: React.Dispatch<React.SetStateAction<AIStatus>>;
+//   messages: AssistantMessage[];
+//   setMessages: React.Dispatch<React.SetStateAction<AssistantMessage[]>>;
+//   paintAPIHandler: () => void;
+//   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+// }
 
-const StoryCard = ({
-  status,
-  setStatus,
-  messages,
-  setMessages,
-  paintAPIHandler,
-  setImageUrl,
-}: StoryCardProps) => {
+const StoryCard = ({ id }: { id: Key }) => {
   return (
-    <div className='card card-compact w-96 bg-base-100 shadow-xl'>
-      <figure>
-        <Image
-          width={400}
-          height={400}
-          src='/images/STORYTIME.png'
-          alt='Shoes'
-          style={{
-            objectFit: 'contain', // cover, contain, none
-          }}
-        />
-      </figure>
-      <div className='card-body'>
-        <h2 className='card-title'>Shoes!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
-        <div className='card-actions justify-end'>
-          <button className='btn btn-primary'>Buy Now</button>
+    <div
+      key={id}
+      id={id.toString()}
+      className='group card card-compact w-96 bg-base-100 shadow-xl'
+    >
+      <div className='relative'>
+        <div className='invisible group-hover:visible absolute inset-x-0 top-14 z-20 opacity-100 transition ease-in-out duration-500'>
+          <VoiceToText />
         </div>
+
+        <figure className='group-hover:opacity-10 transition ease-in-out duration-500'>
+          <Image
+            width={400}
+            height={400}
+            src='/images/STORYTIME.png'
+            alt='Shoes'
+            style={{
+              objectFit: 'contain', // cover, contain, none
+            }}
+            priority
+          />
+        </figure>
+      </div>
+      <div className='card-body'>
+        {/* <h2 className='card-title'>Shoes!</h2> */}
+        <p>TODO: This is the plachholder for Summary Text </p>
+        {/* <div className='card-actions justify-end'>
+
+        </div> */}
       </div>
     </div>
   );
 };
-
-
-//   return (
-//     <main className={fingerPaint.className}>
-//       <header className='py-8 text-5xl font-bold text-center mb-4'>
-//         StoryTime GPT
-//       </header>
-//       <div className='flex min-w-lg flex-wrap'>
-//         <div className='flex flex-col'>
-//           <VoiceSection
-//             status={status}
-//             setStatus={setStatus}
-//             messages={messages}
-//             setMessages={setMessages}
-//             paintAPIHandler={paintAPIHandler}
-//             setImageUrl={setImageUrl}
-//           />
-//           {/* <ChatSettings
-//             status={status}
-//             setStatus={setStatus}
-//             messages={messages}
-//             setMessages={setMessages}
-//             paintAPIHandler={paintAPIHandler}
-//             setImageUrl={setImageUrl}
-//           /> */}
-//         </div>
-
-//         {/* <ChatSection
-//           messages={messages}
-//           status={status}
-//           lastMessageRef={lastMessageRef}
-//           imageStatus={imageStatus}
-//           imageUrl={imageUrl}
-//         /> */}
-//       </div>
-//     </main>
-//   );
-// }

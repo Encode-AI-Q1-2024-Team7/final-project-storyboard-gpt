@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from 'react-aria-components';
 import 'regenerator-runtime/runtime';
 // import { createSpeechlySpeechRecognition } from '@speechly/speech-recognition-polyfill';
 import SpeechRecognition, {
@@ -45,23 +46,27 @@ const VoiceToText = () => {
     }
   }, [browserSupportsSpeechRecognition, listening, transcript]);
 
-  const handleVoiceTranscript = () => {
-    // Stop speech recognition
-    SpeechRecognition.stopListening();
+  const handleVoiceTranscript = (action?: string) => {
+    if (action === 'end') {
+      // Stop speech recognition
+      SpeechRecognition.stopListening();
 
-    console.log('********** transcript: ', transcript);
+      console.log('********** transcript: ', transcript);
 
-    // Update user input state is there is a new voice transcript
-    setUserInput((prev) => {
-      if (voiceTranscript.length <= 0) {
-        return prev;
-      }
-      // A period and space added at end of new voice transcript
-      return [...prev, voiceTranscript.concat('. ')];
-    });
-    // setTimeout(() => {
-    //   resetTranscript();
-    // }, 250); // Added delay to ensure transcript from speech recognition is reset, increase time as needed
+      // Update user input state is there is a new voice transcript
+      setUserInput((prev) => {
+        if (voiceTranscript.length <= 0) {
+          return prev;
+        }
+        // A period and space added at end of new voice transcript
+        return [...prev, voiceTranscript.concat('. ')];
+      });
+      setTimeout(() => {
+        resetTranscript();
+      }, 250); // Added delay to ensure transcript from speech recognition is reset, increase time as needed
+    }
+    resetTranscript();
+    startListening();
   };
 
   const handleUndo = () => {
@@ -78,14 +83,14 @@ const VoiceToText = () => {
     setUserInput([]);
   };
 
-  async function handleAPI() {
+  async function handleStoryAPI() {
     // event.preventDefault();
     // setMessages([]); // Clear messages
     // setImageUrl('');
     // setStatus(AIStatus.InProgress);
 
     const formData = new FormData();
-    formData.append('message', voiceTranscript);
+    formData.append('message', userInput.join(' '));
 
     const response = await fetch('/api/ai-assistant-voice', {
       method: 'POST',
@@ -169,81 +174,87 @@ const VoiceToText = () => {
   }
 
   return (
-    <>
-      <div className='flex justify-center'>
-        {isListening ? (
+    <div className='mx-auto'>
+      <div className='flex flex-col'>
+        <div className='flex justify-center'>
+          {isListening ? (
+            <>
+              <MicIcon />
+              <span>Listening...</span>
+            </>
+          ) : (
+            <>
+              <span>Microphone:&nbsp;</span>
+              <span>Off</span>
+            </>
+          )}
+        </div>
+
+        <Button
+          id='btn-speech'
+          className='mt-1 btn btn-primary w-fit mx-auto'
+          onPressStart={() => handleVoiceTranscript('start')}
+          // onTouchStart={() => handleVoiceTranscript('start')}
+          // onMouseDown={() => handleVoiceTranscript('start')}
+          onPressEnd={() => handleVoiceTranscript('end')}
+          // onTouchEnd={() => handleVoiceTranscript('end')}
+          // onMouseUp={() => handleVoiceTranscript('end')}
+        >
+          Hold to talk
+        </Button>
+        <br />
+        {voiceTranscript.length > 0 && isListening ? (
           <>
-            <MicIcon />
-            <span>Listening...</span>
+            <p className='text-center text-lg text-green-700'>
+              {voiceTranscript}
+            </p>
           </>
+        ) : userInput.length > 0 ? (
+          <div className='flex flex-col justify-between'>
+            <p className='text-center text-lg text-blue-700'>{userInput}</p>
+            <div className='flex'>
+              {/* <Button
+                id='btn-api'
+                className='mx-auto btn btn-secondary w-fit'
+                onPress={handleSummaryAPI}
+              >
+                Summary
+              </Button>
+              <Button
+                id='btn-api'
+                className='mx-auto btn btn-secondary w-fit'
+                onPress={handleImageAPI}
+              >
+                IMAGE
+              </Button> */}
+              <Button
+                id='btn-api'
+                className='mx-auto btn btn-secondary w-fit'
+                onPress={handleStoryAPI}
+              >
+                Create A Story
+              </Button>
+              <Button
+                id='btn-reset'
+                className='mx-auto btn btn-secondary w-fit'
+                onPress={handleReset}
+              >
+                Reset
+              </Button>
+              <Button
+                id='btn-undo'
+                className='mx-auto btn btn-ghost w-fit'
+                onPress={handleUndo}
+              >
+                Undo
+              </Button>
+            </div>
+          </div>
         ) : (
-          <>
-            <span>Microphone:&nbsp;</span>
-            <span>Off</span>
-          </>
+          <p className='text-center'>Press Mic and Speak</p>
         )}
       </div>
-
-      <button
-        id='btn-speech'
-        className='btn btn-primary'
-        onTouchStart={startListening}
-        onMouseDown={startListening}
-        onTouchEnd={handleVoiceTranscript}
-        onMouseUp={handleVoiceTranscript}
-      >
-        Hold to talk
-      </button>
-      <br />
-      {/* {voiceTranscript.length > 0 ? ( */}
-      <>
-          <p className='text-center text-lg text-green-700'>
-            {voiceTranscript}
-          </p>
-        </>
-      {/* ) : userInput.length > 0 ? ( */}
-      <>
-        <p className='text-center text-lg text-blue-700'>{userInput}</p>
-        <button
-          id='btn-api'
-          className='mx-auto btn btn-secondary w-fit'
-          onClick={handleSummaryAPI}
-        >
-          Summary
-        </button>
-        <button
-          id='btn-api'
-          className='mx-auto btn btn-secondary w-fit'
-          onClick={handleImageAPI}
-        >
-          IMAGE
-        </button>
-        <button
-          id='btn-api'
-          className='mx-auto btn btn-secondary w-fit'
-          onClick={handleAPI}
-        >
-          API
-        </button>
-        <button
-          id='btn-reset'
-          className='mx-auto btn btn-secondary w-fit'
-          onClick={handleReset}
-        >
-          Reset
-        </button>
-        <button
-          id='btn-undo'
-          className='mx-auto btn btn-ghost w-fit'
-          onClick={handleUndo}
-        >
-          Undo
-        </button>
-      </>
-      {/* ) : (
-        <p className='text-center'>Press Mic and Speak</p>
-      )} */}
-    </>
+    </div>
   );
 };
 export default VoiceToText;
