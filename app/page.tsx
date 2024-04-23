@@ -97,7 +97,7 @@ export default function Home() {
   return (
     <main className='min-w-[500px]'>
       <header className='py-8 text-5xl font-bold text-center'>
-        StoryTime GPT
+        {`StoryTime GPT\nCreates imaginations into stories.`}
       </header>
       {/* <div className={styles.spacer}></div> */}
       <div ref={gallery} className={styles.gallery}>
@@ -149,7 +149,7 @@ const StoryCard = ({ id }: { id: Key }) => {
           <Image
             width={400}
             height={400}
-            src='/images/STORYTIME.png'
+            src='/static/storytime_logo.png'
             alt='Shoes'
             style={{
               objectFit: 'contain', // cover, contain, none
