@@ -1,0 +1,49 @@
+.gallery {
+  max-width: 1250px;
+  height: 300vh;
+  background: rgb(45, 45, 45);
+  position: relative;
+  display: flex;
+  gap: 2vw;
+  padding: 2vw;
+  box-sizing: border-box;
+  //   overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
+  margin-left: auto;
+  margin-right: auto;
+  .column {
+    position: relative;
+    height: 100%;
+    width: 32vw;
+    // min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    .imageContainer {
+      height: 100%;
+      width: 100%;
+      position: relative;
+      border-radius: 1vw;
+      overflow: hidden;
+      img {
+        object-fit: cover;
+      }
+    }
+    &:nth-of-type(1) {
+      top: -90%;
+    }
+    &:nth-of-type(2) {
+      top: 0%;
+    }
+    &:nth-of-type(3) {
+      top: -100%;
+    }
+  }
+  .column:hover {
+    z-index: 10;
+  }
+}
+.spacer {
+  height: 15vh;
+}
