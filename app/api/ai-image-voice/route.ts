@@ -3,7 +3,7 @@ import { openai } from '@/app/utils/openai';
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge';
 
-const ASSISTANT_NAME = 'DaVinci';
+const ASSISTANT_NAME = 'storys';
 
 export async function POST(req: Request) {
   const data = await req.json();
