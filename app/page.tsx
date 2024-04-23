@@ -9,7 +9,6 @@ import ChatSection from './components/chat/ChatSection';
 import VoiceSection from './components/chat/VoiceSection';
 import VoiceToText from './components/chat/VoiceToText';
 
-
 export enum AIStatus {
   Idle = 'Idle',
   InProgress = 'In Progress',
@@ -96,8 +95,23 @@ export default function Home() {
 
   return (
     <main className='min-w-[500px]'>
-      <header className='py-8 text-5xl font-bold text-center'>
-        {`StoryTime GPT\nCreates imaginations into stories.`}
+      <header className='relative py-8 text-5xl font-bold text-center'>
+        <Image
+          src='/static/android-chrome-192x192.png'
+          alt='StoryTime GPT'
+          width={100}
+          height={100}
+          className='absolute top-5 left-5 w-20 h-20  sm:visible invisible'
+        />
+        <h1>StoryTime GPT</h1>
+        <p className='text-2xl'>Creates imaginations into stories</p>
+        <Image
+          src='/static/android-chrome-192x192.png'
+          alt='StoryTime GPT'
+          width={100}
+          height={100}
+          className='absolute top-5 right-5 w-20 h-20 sm:visible invisible'
+        />
       </header>
       {/* <div className={styles.spacer}></div> */}
       <div ref={gallery} className={styles.gallery}>
