@@ -24,7 +24,7 @@ export async function getSummary(
       messages: [
         {
           role: 'system',
-          content: `Can you generate a single sentence summary in 20 words from this story text? Here is the story: ${JSON.stringify(
+          content: `Can you generate a single sentence summary in 15 words in plain language from this sci-fi story text? Here is the story: ${JSON.stringify(
             data.content
           )}`,
         },
