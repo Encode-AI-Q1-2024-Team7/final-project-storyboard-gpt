@@ -19,10 +19,10 @@ export async function getImage(
 ): Promise<ImageAPIResponse> {
   try {
     const openaiDallEResponse = await openai.images.generate({
-      model: 'dall-e-2',
+      model: 'dall-e-3',
       n: 1,
-      size: '512x512', // Dall-e-3 model requires 1024x1024 minimum
-      prompt: data.content,
+      size: '1024x1024', // Dall-e-3 model requires 1024x1024 minimum
+      prompt: `Generate a cyberpunk theme image based on this script, ${data.content}. Do not include any text in the image.`,
     });
 
     if (!openaiDallEResponse || !openaiDallEResponse.data[0].url) {
