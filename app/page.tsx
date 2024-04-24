@@ -104,7 +104,7 @@ export default function Home() {
           className='absolute top-5 left-5 w-20 h-20  sm:visible invisible'
         />
         <h1>StoryTime GPT</h1>
-        <p className='text-2xl'>Creates imaginations into stories</p>
+        <p className='text-2xl'>Creating imaginations into adventures</p>
         <Image
           src='/static/android-chrome-192x192.png'
           alt='StoryTime GPT'
@@ -130,10 +130,9 @@ export default function Home() {
 const Column = ({ id, y }: { id: string; y: any }) => {
   return (
     <motion.div className={styles.column} style={{ y }}>
-      <StoryCard id={id} />
-      <StoryCard id={id} />
-      <StoryCard id={id} />
-      <StoryCard id={id} />
+      {Array.from({ length: 4 }, (_, i) => (
+        <StoryCard key={i} id={`${id}-card${i+1}`} />
+      ))}
     </motion.div>
   );
 };
