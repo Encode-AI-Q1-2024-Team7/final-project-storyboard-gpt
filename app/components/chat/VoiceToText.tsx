@@ -117,6 +117,7 @@ export const VoiceToText = ({
       });
       setCardError(lastErrorValue);
     } else {
+      setCardError('');
       setCardData(data);
     }
 
