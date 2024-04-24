@@ -1,5 +1,8 @@
+'use server'
 import { openai } from '@/app/utils/openai';
 import { APIError } from './route';
+import { writeFileSync } from 'fs';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 interface ImageAPIResponse {
   isError: boolean;
@@ -22,7 +25,7 @@ export async function getImage(
       prompt: data.content,
     });
 
-    if (!openaiDallEResponse) {
+    if (!openaiDallEResponse || !openaiDallEResponse.data[0].url) {
       const response: ImageAPIResponse = {
         isError: true,
         errorMessage: APIError.Image,
@@ -32,12 +35,13 @@ export async function getImage(
     }
 
     // console.log('********** openaiDallEResponse: ', openaiDallEResponse);
+    const imgUrl = openaiDallEResponse.data[0].url;
 
     const response: ImageAPIResponse = {
       isError: false,
       errorMessage: null,
       data: {
-        url: openaiDallEResponse.data[0].url ?? '',
+        url: imgUrl,
       },
     };
 
@@ -52,3 +56,22 @@ export async function getImage(
     return response;
   }
 }
+
+// export async function writeFile(req: NextApiRequest, res: NextApiResponse) {
+//   const { path } = req.query;
+//   if (!path) {
+//     res.status(400).json({ status: 'no path provided' });
+//   } else {
+//     fetch(path as string)
+//       .then((response) => response.arrayBuffer())
+//       .then((buffer) => {
+//         const content = Buffer.from(buffer);
+//         writeFileSync(`/app/api/ai-create-story/img/2.png`, content);
+//         res.status(200).json({ status: 'success'});
+//       })
+//       .catch((error) => {
+//         console.error('Error:', error);
+//         res.status(500).json({ status: 'internal server error' });
+//       });
+//   }
+// }
