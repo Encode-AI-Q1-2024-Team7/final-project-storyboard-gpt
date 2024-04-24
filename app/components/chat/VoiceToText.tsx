@@ -24,6 +24,7 @@ const VoiceToText = () => {
     []
   );
   const [summaryText, setSummaryText] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const {
     transcript,
@@ -93,7 +94,8 @@ const VoiceToText = () => {
 
     formData.append('message', userInput.join(' '));
 
-    const response = await fetch('/api/ai-assistant-voice', {
+    // const response = await fetch('/api/ai-assistant-voice', {
+    const response = await fetch('/api/ai-create-story', {
       method: 'POST',
       body: JSON.stringify({ message: formData.get('message') }),
     });
@@ -103,9 +105,9 @@ const VoiceToText = () => {
       return;
     }
 
-    const data: { messages: AssistantMessage[] } = await response.json();
+    const data = await response.json();
     console.log('********** data from API: ', data);
-    setVoiceAPIResponse(data.messages);
+    // setVoiceAPIResponse(data.messages);
     // setStatus(AIStatus.Idle);
   }
 
@@ -145,7 +147,10 @@ const VoiceToText = () => {
 
     //const prompt = summaryText;
 
-    const prompt = "Give me an animated picture to represent this: " + summaryText +", and please highlight the sci-fi part.";
+    const prompt =
+      'Give me an animated picture to represent this: ' +
+      summaryText +
+      ', and please highlight the sci-fi part.';
 
     // If the prompt is not found, log an error and return
     if (!prompt) {
