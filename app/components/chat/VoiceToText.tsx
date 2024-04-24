@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-aria-components';
 import 'regenerator-runtime/runtime';
-// import { createSpeechlySpeechRecognition } from '@speechly/speech-recognition-polyfill';
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
-import { Train_One } from 'next/font/google';
 import MicIcon from '../icons/micIcon';
-import { AssistantMessage } from 'ai';
-import { useChat } from 'ai/react';
+import { APIResponse } from '@/app/api/ai-create-story/route';
+import { CardData, Loading } from '../ui/StoryCard';
 
-// const appId = '<INSERT_SPEECHLY_APP_ID_HERE>';
-// const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
-// SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
+interface VoiceToTextProps {
+  setCardData: (data: CardData) => void;
+  setCardError: (error: string) => void;
+  isLoading: boolean;
+  setIsLoading: (loading: Loading) => void;
+}
 
-const VoiceToText = () => {
+export const VoiceToText = ({
+  setCardData,
+  setCardError,
+  isLoading,
+  setIsLoading,
+}: VoiceToTextProps) => {
   const [browserSupportsSpeech, setBrowserSupportsSpeech] =
     useState<boolean>(true);
   const [userInput, setUserInput] = useState<string[]>([]);
   const [voiceTranscript, setVoiceTranscript] = useState<string>('');
   const [isListening, setIsListening] = useState<boolean>(false);
-  const [voiceAPIResponse, setVoiceAPIResponse] = useState<AssistantMessage[]>(
-    []
-  );
-  const [summaryText, setSummaryText] = useState<string>('');
-  const [error, setError] = useState<string>('');
 
   const {
     transcript,
@@ -32,7 +33,6 @@ const VoiceToText = () => {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
-  // //   const [] = useState();
   const startListening = () =>
     SpeechRecognition.startListening({ continuous: true });
 
@@ -51,8 +51,7 @@ const VoiceToText = () => {
     if (action === 'end') {
       // Stop speech recognition
       SpeechRecognition.stopListening();
-
-      console.log('********** transcript: ', transcript);
+      // console.log('********** transcript: ', transcript);
 
       // Update user input state is there is a new voice transcript
       setUserInput((prev) => {
@@ -74,108 +73,56 @@ const VoiceToText = () => {
     // Remove last element in array from user input
     setUserInput((prev) => {
       const copy = [...prev];
-
       copy.pop();
       return copy;
     });
   };
-  const handleReset = () => {
-    // Remove all elements in array from user input
-    setUserInput([]);
-  };
 
   async function handleStoryAPI() {
-    // event.preventDefault();
-    // setMessages([]); // Clear messages
-    // setImageUrl('');
-    // setStatus(AIStatus.InProgress);
+    // Start AI request
+    setIsLoading({ state: true, value: 10 });
 
     const formData = new FormData();
-
     formData.append('message', userInput.join(' '));
 
-    // const response = await fetch('/api/ai-assistant-voice', {
+    // Simulate progress
+    setIsLoading({ state: true, value: 30 });
+
+    // Call the AI API
     const response = await fetch('/api/ai-create-story', {
       method: 'POST',
       body: JSON.stringify({ message: formData.get('message') }),
     });
 
+    setIsLoading({ state: true, value: 90 });
+
     if (!response.ok) {
-      console.error('API request failed');
+      setIsLoading({ state: false, value: 0 });
+      setCardError('An error occurred, please try again');
       return;
     }
 
-    const data = await response.json();
-    console.log('********** data from API: ', data);
-    // setVoiceAPIResponse(data.messages);
-    // setStatus(AIStatus.Idle);
+    // Get the response from the API
+    const res = (await response.json()) as { apiResponse: APIResponse };
+    const { isError, errorMessage, data } = res.apiResponse;
+
+    // Set the card data or error
+    if (isError) {
+      // Get the last error key and value
+      let lastErrorValue = '';
+      Object.entries(errorMessage).forEach(([_, value]) => {
+        if (value !== '') {
+          lastErrorValue = value;
+        }
+      });
+      setCardError(lastErrorValue);
+    } else {
+      setCardData(data);
+    }
+
+    // End loading
+    setIsLoading({ state: false, value: 0 });
   }
-
-  const handleSummaryAPI = async () => {
-    // Get the story suggestion from the assistant
-    const prompt = voiceAPIResponse.find(
-      (message) => message.role === 'assistant'
-    )?.content;
-
-    // If the prompt is not found, log an error and return
-    if (!prompt) {
-      console.error('Voice Response not found');
-      return;
-    }
-
-    // Call the AI Summary API
-    const response = await fetch('/api/ai-chat-summary', {
-      method: 'POST',
-      body: JSON.stringify({
-        prompt,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error('API request failed');
-      return;
-    }
-
-    const responseSummaryText = await response.json();
-    console.log('********** responseSummaryText: ', responseSummaryText);
-    setSummaryText(responseSummaryText);
-  };
-
-  const handleImageAPI = async () => {
-    // // Set the status to in progress
-    // setImageStatus(AIStatus.InProgress);
-
-    //const prompt = summaryText;
-    
-
-
-    const prompt = "Give me a storybook style picture to: " + summaryText +". And please highlight the sci-fi part.";
-
-
-    // If the prompt is not found, log an error and return
-    if (!prompt) {
-      console.error('Prompt not found');
-      return;
-    }
-
-    // Call the AI image API
-    const response = await fetch('/api/ai-image-voice', {
-      method: 'POST',
-      body: JSON.stringify({
-        prompt,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error('API request failed');
-      return;
-    }
-
-    const responseUrl = await response.json();
-    console.log('********** responseUrl: ', responseUrl);
-    // setImageUrl(responseUrl.imageUrl);
-    // setImageStatus(AIStatus.Idle);
-  };
 
   if (!browserSupportsSpeech) {
     return <div>Your browser does not support speech recognition</div>;
@@ -197,19 +144,46 @@ const VoiceToText = () => {
             </>
           )}
         </div>
-
         <Button
           id='btn-speech'
           className='mt-1 btn btn-primary w-fit mx-auto'
           onPressStart={() => handleVoiceTranscript('start')}
-          // onTouchStart={() => handleVoiceTranscript('start')}
-          // onMouseDown={() => handleVoiceTranscript('start')}
           onPressEnd={() => handleVoiceTranscript('end')}
-          // onTouchEnd={() => handleVoiceTranscript('end')}
-          // onMouseUp={() => handleVoiceTranscript('end')}
+          isDisabled={isLoading}
         >
           Hold to talk
         </Button>
+        <br />
+        {userInput.length > 0 ? (
+          <div className='flex flex-col justify-between'>
+            <div className='flex'>
+              <Button
+                id='btn-api'
+                className='mx-auto btn btn-ghost w-fit'
+                onPress={handleStoryAPI}
+                isDisabled={isLoading}
+              >
+                Create A Story
+              </Button>
+              <Button
+                id='btn-undo'
+                className='mx-auto btn btn-ghost w-fit'
+                onPress={handleUndo}
+                isDisabled={isLoading}
+              >
+                Undo
+              </Button>
+              <Button
+                id='btn-reset'
+                className='mx-auto btn btn-ghost w-fit'
+                onPress={() => setUserInput([])}
+                isDisabled={isLoading}
+              >
+                Reset
+              </Button>
+            </div>
+          </div>
+        ) : null}
         <br />
         {voiceTranscript.length > 0 && isListening ? (
           <>
@@ -218,46 +192,7 @@ const VoiceToText = () => {
             </p>
           </>
         ) : userInput.length > 0 ? (
-          <div className='flex flex-col justify-between'>
-            <p className='text-center text-lg text-blue-700'>{userInput}</p>
-            <div className='flex'>
-               <Button
-                id='btn-api'
-                className='mx-auto btn btn-secondary w-fit'
-                onPress={handleSummaryAPI}
-              >
-                Summary
-              </Button>
-              <Button
-                id='btn-api'
-                className='mx-auto btn btn-secondary w-fit'
-                onPress={handleImageAPI}
-              >
-                IMAGE
-              </Button> 
-              <Button
-                id='btn-api'
-                className='mx-auto btn btn-secondary w-fit'
-                onPress={handleStoryAPI}
-              >
-                Create A Story
-              </Button>
-              <Button
-                id='btn-reset'
-                className='mx-auto btn btn-secondary w-fit'
-                onPress={handleReset}
-              >
-                Reset
-              </Button>
-              <Button
-                id='btn-undo'
-                className='mx-auto btn btn-ghost w-fit'
-                onPress={handleUndo}
-              >
-                Undo
-              </Button>
-            </div>
-          </div>
+          <p className='text-center text-lg text-blue-700'>{userInput}</p>
         ) : (
           <p className='text-center'>Press Mic and Speak</p>
         )}

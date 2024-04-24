@@ -8,9 +8,9 @@ export const runtime = 'edge';
 const INVALID_MESSAGE = 'please try again';
 
 export enum APIError {
-  Story = 'Story API Error',
-  Summary = 'Summary API Error',
-  Image = 'Image API Error',
+  Story = `Sorry, Please try again.`,
+  Summary = 'We ran into an issue, please try again.',
+  Image = 'Could not generate image, please try again.',
 }
 
 export type ErrorMessage = {
@@ -64,10 +64,11 @@ export async function POST(req: Request): Promise<Response> {
     apiResponse.isError = true;
     apiResponse.errorMessage.storyError =
       storyAPIResponse.errorMessage ?? APIError.Story;
-    return Response.json({ apiResponse } as { apiResponse: APIResponse });
+    return Response.json({ apiResponse });
   }
 
   const { message: story } = storyAPIResponse.data;
+  apiResponse.data.story = story; // Set the story in the API response
 
   // Get summary of the story from openai chat completions
   const summaryAPIResponse = await getSummary({ content: story });
@@ -83,21 +84,25 @@ export async function POST(req: Request): Promise<Response> {
     apiResponse.isError = true;
     apiResponse.errorMessage.summaryError =
       summaryAPIResponse.errorMessage ?? APIError.Summary;
-    return Response.json({ apiResponse } as { apiResponse: APIResponse });
+    return Response.json({ apiResponse });
   }
+  const { message: summary } = summaryAPIResponse.data;
+  apiResponse.data.summary = summary; // Set the summary in the API response
 
   // Get image from openai dall-e completions
   const imageAPIResponse = await getImage({
-    content: summaryAPIResponse.data.message,
+    content: summary,
   });
   console.log('********** imageAPIResponse: ', imageAPIResponse);
 
-  if (imageAPIResponse.isError || imageAPIResponse.data?.url) {
+  if (imageAPIResponse.isError || !imageAPIResponse.data?.url) {
     apiResponse.isError = true;
     apiResponse.errorMessage.imageError =
       imageAPIResponse.errorMessage ?? APIError.Image;
-    return Response.json({ apiResponse } as { apiResponse: APIResponse });
+    return Response.json({ apiResponse });
   }
+  const { url: image } = imageAPIResponse.data;
+  apiResponse.data.image = image; // Set the image in the API response
 
-  return Response.json({ apiResponse } as { apiResponse: APIResponse });
+  return Response.json({ apiResponse });
 }
