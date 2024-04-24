@@ -21,18 +21,23 @@ Leveraging the capabilities of the OPENAI Chat API, we extracted concise summari
 To complement our stories, we employed the DALLE-3 model to produce visual representations. 
 
 ##### Fine-Tuning Examples
+###### Step 1 (Original Concept):
 Initially, our images reflected a traditional sci-fi aesthetic, which we found to be outdated.
 ![Original Concept](./public/example/1.png)
 
+###### Step 2 (Cyberpunk Theme):
 Transitioning to a cyberpunk theme introduced visually striking elements, though facial features remained inconsistent and sometimes distorted.
 ![Cyberpunk Theme](./public/example/2.png)
 
+###### Step 3 (Detailed Focus):
 Despite efforts to enhance character details, challenges persisted in achieving satisfactory facial rendering.
 ![Detailed Focus](./public/example/3.png)
 
+###### Step 4 (Animated Approach):
 Implementing an animated theme proved successful, as it offered greater tolerance for unconventional facial features.
 ![Animated Approach](./public/example/4.png)
 
+###### Step 5 (Word Removal):
 Finally, we refined our images by removing extraneous text, ensuring clarity and focus on visual storytelling.
 ![Word Removal](./public/example/5.png)
 
