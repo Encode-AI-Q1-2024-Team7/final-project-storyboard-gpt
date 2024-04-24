@@ -146,8 +146,11 @@ const VoiceToText = () => {
     // setImageStatus(AIStatus.InProgress);
 
     //const prompt = summaryText;
+    
 
-    const prompt = "Give me an animated picture to represent this: " + summaryText +", and please highlight the sci-fi part.";
+
+    const prompt = "Give me a storybook style picture to: " + summaryText +". And please highlight the sci-fi part.";
+
 
     // If the prompt is not found, log an error and return
     if (!prompt) {
