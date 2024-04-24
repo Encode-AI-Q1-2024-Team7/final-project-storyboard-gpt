@@ -73,14 +73,9 @@ export const VoiceToText = ({
     // Remove last element in array from user input
     setUserInput((prev) => {
       const copy = [...prev];
-
       copy.pop();
       return copy;
     });
-  };
-  const handleReset = () => {
-    // Remove all elements in array from user input
-    setUserInput([]);
   };
 
   async function handleStoryAPI() {
@@ -102,9 +97,8 @@ export const VoiceToText = ({
     setIsLoading({ state: true, value: 90 });
 
     if (!response.ok) {
-      console.error('API request failed');
       setIsLoading({ state: false, value: 0 });
-      setCardError('Please try again');
+      setCardError('An error occurred, please try again');
       return;
     }
 
@@ -162,7 +156,7 @@ export const VoiceToText = ({
         <br />
         {userInput.length > 0 ? (
           <div className='flex flex-col justify-between'>
-            <div className='flex bottom-0'>
+            <div className='flex'>
               <Button
                 id='btn-api'
                 className='mx-auto btn btn-ghost w-fit'
@@ -182,7 +176,7 @@ export const VoiceToText = ({
               <Button
                 id='btn-reset'
                 className='mx-auto btn btn-ghost w-fit'
-                onPress={handleReset}
+                onPress={() => setUserInput([])}
                 isDisabled={isLoading}
               >
                 Reset

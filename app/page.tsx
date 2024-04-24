@@ -20,7 +20,6 @@ export type AssistantMessage = {
 export default function Home() {
   const gallery = useRef(null);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
-  const [messages, setMessages] = useState<AssistantMessage[]>([]);
 
   const { scrollYProgress } = useScroll({
     target: gallery,
@@ -57,13 +56,13 @@ export default function Home() {
       <header className='relative py-8 text-5xl font-bold text-center'>
         <Image
           src='/static/android-chrome-192x192.png'
-          alt='StoryTime GPT'
+          alt='StoryTime'
           width={100}
           height={100}
           className='absolute top-5 left-5 w-20 h-20  sm:visible invisible'
         />
         <h1>StoryTime GPT</h1>
-        <p className='text-2xl'>Creating imaginations into adventures</p>
+        <p className='text-2xl'>Create imaginations into stories</p>
         <Image
           src='/static/android-chrome-192x192.png'
           alt='StoryTime GPT'
@@ -79,9 +78,9 @@ export default function Home() {
         <Column id='col3' y={y3} />
       </div>
       <div className={styles.spacer}></div>
-      <header className='py-8 text-5xl font-bold text-center'>
+      <footer className='py-8 text-5xl font-bold text-center'>
         ~ End of Page ~
-      </header>
+      </footer>
     </main>
   );
 }
