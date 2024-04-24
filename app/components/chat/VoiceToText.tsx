@@ -146,11 +146,11 @@ const VoiceToText = () => {
     // setImageStatus(AIStatus.InProgress);
 
     //const prompt = summaryText;
+    
 
-    const prompt =
-      'Give me an animated picture to represent this: ' +
-      summaryText +
-      ', and please highlight the sci-fi part.';
+
+    const prompt = "Give me a storybook style picture to: " + summaryText +". And please highlight the sci-fi part.";
+
 
     // If the prompt is not found, log an error and return
     if (!prompt) {
@@ -221,7 +221,7 @@ const VoiceToText = () => {
           <div className='flex flex-col justify-between'>
             <p className='text-center text-lg text-blue-700'>{userInput}</p>
             <div className='flex'>
-              {/* <Button
+               <Button
                 id='btn-api'
                 className='mx-auto btn btn-secondary w-fit'
                 onPress={handleSummaryAPI}
@@ -234,7 +234,7 @@ const VoiceToText = () => {
                 onPress={handleImageAPI}
               >
                 IMAGE
-              </Button> */}
+              </Button> 
               <Button
                 id='btn-api'
                 className='mx-auto btn btn-secondary w-fit'
