@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'system',
-        content: `Can you generate a single sentence summary in 15 words in plain language from this story text? Here is the story: ${JSON.stringify(prompt)}`,
+        content: `Can you generate a single sentence summary in 15 words in plain language from this sci-fi story text? Here is the story: ${JSON.stringify(prompt)}`,
       },
     ],
     max_tokens: 200,
