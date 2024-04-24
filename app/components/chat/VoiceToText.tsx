@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-aria-components';
 import 'regenerator-runtime/runtime';
 import SpeechRecognition, {
@@ -7,7 +7,6 @@ import SpeechRecognition, {
 import MicIcon from '../icons/micIcon';
 import { APIResponse } from '@/app/api/ai-create-story/route';
 import { CardData, Loading } from '../ui/StoryCard';
-import { clear } from 'console';
 
 interface VoiceToTextProps {
   setCardData: (data: CardData) => void;
@@ -52,8 +51,7 @@ export const VoiceToText = ({
     if (action === 'end') {
       // Stop speech recognition
       SpeechRecognition.stopListening();
-
-      console.log('********** transcript: ', transcript);
+      // console.log('********** transcript: ', transcript);
 
       // Update user input state is there is a new voice transcript
       setUserInput((prev) => {
@@ -156,11 +154,7 @@ export const VoiceToText = ({
           id='btn-speech'
           className='mt-1 btn btn-primary w-fit mx-auto'
           onPressStart={() => handleVoiceTranscript('start')}
-          // onTouchStart={() => handleVoiceTranscript('start')}
-          // onMouseDown={() => handleVoiceTranscript('start')}
           onPressEnd={() => handleVoiceTranscript('end')}
-          // onTouchEnd={() => handleVoiceTranscript('end')}
-          // onMouseUp={() => handleVoiceTranscript('end')}
           isDisabled={isLoading}
         >
           Hold to talk
