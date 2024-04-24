@@ -6,7 +6,7 @@ StoryTime creates imaginations into short stories. Need a quick bedtime story? U
 
 ### Sample Demo
 
-TODO
+https://github.com/Encode-AI-Q1-2024-Team7/final-project-storyboard-gpt/assets/105133922/0ab7c321-50a1-4dba-b9ff-379b1ebc49b0
 
 ## How we made it
 
