@@ -1,12 +1,23 @@
-# Encode AI Team 7: project-3-painter-gpt
+# Encode AI Team 7: StoryTime GPT
 
 ## Project Description
 
-A Painter GPT program that suggests vivid ideas for a painting based on an art theme. A user selected art theme is sent to an OpenAI Assistant named 'DaVinci' who is a professional painter. DaVinci will provide the descriptive details and also paint the masterpiece upon request.
+StoryTime creates imaginations into short stories. Need a quick bedtime story? Use your voice and describe your current mood or interests. StoryTime will creatively generate a short story. Create a new story or go back to your favorites anytime!
 
 ### Sample Demo
 
-https://github.com/Encode-AI-Q1-2024-Team7/project-3-painter-gpt/assets/105133922/7b78f9c1-c756-4052-9711-5eee30456e33
+TODO
+
+## How we made it
+
+### AI Description
+
+TODO
+
+### Dependencies
+- NextJs / Typescript
+- Tailwind / DaisyUI / React Aria Components
+- OpenAI
 
 ## Instructions
 
@@ -22,7 +33,7 @@ npm install
 
 ### 3. Setting up your keys and OPEN AI Assistant
 
-- Rename `.env.example` to `.env`
+- Rename `.env.example` to `.env.local`
 
 - Include your Open AI key for `OPENAI_API_KEY=` in the env file
   - Sign up for an api key at [OpenAI](https://openai.com/)
@@ -39,3 +50,8 @@ npm run dev
 ```
 
 Open link in browser (Default link): [http://localhost:3000/](http://localhost:3000/)
+
+## Team Members
+- 👨‍💻 [Chris Salvador](https://github.com/csalvador58)
+- 👩‍💻 [Vivien Zhou](https://github.com/vivienzhou2014)
+- 👨‍💻 [Ahmed Shalabi](https://github.com/aashalabi)

@@ -1,8 +1,24 @@
-import { Key, useState } from 'react';
+import { Key, use, useEffect, useState } from 'react';
 import VoiceToText from '../chat/VoiceToText';
 import { Button } from 'react-aria-components';
 import Image from 'next/image';
 import StoryModal from './StoryModal';
+import demo from '@/app/api/ai-create-story/data/data.json';
+
+const CARD_LOOKUP: { [key: string]: number } = {
+  'col1-1': 1,
+  'col1-2': 2,
+  'col1-3': 3,
+  'col1-4': 4,
+  'col2-1': 5,
+  'col2-2': 6,
+  'col2-3': 7,
+  'col2-4': 8,
+  'col3-1': 9,
+  'col3-2': 10,
+  'col3-3': 11,
+  'col3-4': 12,
+};
 
 export type CardData = {
   story: string;
@@ -13,6 +29,13 @@ export type CardData = {
 export type Loading = {
   state: boolean;
   value: number;
+};
+
+export type Demo = {
+  id: number;
+  content: string;
+  summary: string;
+  image: string;
 };
 
 const DefaultSummary = 'StoryTime';
@@ -35,6 +58,19 @@ export const StoryCard = ({ id }: { id: Key }) => {
   const cardStyle = isLoading.state
     ? 'opacity-10 transition ease-in-out duration-500'
     : 'group-hover:opacity-10 transition ease-in-out duration-500';
+
+  // Setting up a few cards for pre-rendering for sample demo
+  useEffect(() => {
+    const cardId = id.toString();
+    if (CARD_LOOKUP[cardId] === 1 || CARD_LOOKUP[cardId] === 3 || CARD_LOOKUP[cardId] === 7 || CARD_LOOKUP[cardId] === 9 || CARD_LOOKUP[cardId] === 11) {
+      const demoData = demo.data.find((data: Demo) => CARD_LOOKUP[cardId] === data.id);
+      setCardData({
+        story: demoData?.content!,
+        summary: demoData?.summary!,
+        image: demoData?.image!,
+      });
+    }
+  }, [id]);
 
   return (
     <>
