@@ -18,7 +18,7 @@ export async function getSummary(
   try {
     // Request the OpenAI API for the response based on the prompt
     const openaiChatResponse = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-turbo',
       stream: false,
 
       messages: [
